@@ -49,7 +49,7 @@ public class Order {
 //    원래대로라면 각각 persist해줘야한다.
 
 
-    private LocalDateTime orderdate; // 주문시간
+    private LocalDateTime orderDate; // 주문시간
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태 [ order ,cancel]
@@ -71,14 +71,64 @@ public class Order {
         delivery.setOrder(this);
     }
 
+    // == 생성 메서드 == //
+
+    /**
+     * 연관관계가 복잡한 도메인에서는 별도에 생성 메서드가 있으면 좋다.
+     *
+     * 앞으로 생성하는 지점을 변경해야하면 createOrder만 바꾸면된다.
+     *
+     * 밖에서 Order를 new 해서 set set set 하는 방식이 아니라.
+     * 생성할때부터 createOrder를 호출해야한다. -> 주문생성에관해 완결을 시킨다.
+     * 앞으로 주문생성과 관련된 메소드는 createOrder만 보면 된다.
+     */
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    // == 비즈니스 로직 == //
+
+    /**
+     * 주문 취소
+     */
+    public void cancel() {
+        // 배송완료되었다면 exception
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        }
+        // 배송완료상태가 아니라면 cancel 상태로 변경
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+
+    }
+
+    // == 조회 로직 == //
+
+    /**
+     * 전체 주문 가격 조회
+     */
+    public int getTotalPrice() {
+//        int totalPrice = 0;
+//        for (OrderItem orderItem : orderItems) {
+//            totalPrice += orderItem.getTotalPrice();
+//        }
+//        return totalPrice;
+
+        return orderItems.stream()
+                .mapToInt(OrderItem::getTotalPrice)
+                .sum();
+    }
 
 
-//    public static void main(String[] args) {
-//        Member member = new Member();
-//        Order order = new Order();
-//
-//        member.getOrders().add(order);
-//        order.setMember(member);
-//
-//    }
+
 }
