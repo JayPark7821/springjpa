@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,18 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
+    @Transactional
+    public void updateItem(Long itemId, String name , int price , int stockQuantity) {
+        // 의미있는 메소드를 만들어라
+        // ex) addStock() , changeName() etc
+        // 아래와 같이 set은....좀.....
+
+        Item findItem = itemRepository.findOne(itemId);
+        findItem.setPrice(price);
+        findItem.setName(name);
+        findItem.setStockQuantity(stockQuantity);
+
+    }
     public Item findOne(Long itemId) {
         return itemRepository.findOne(itemId);
     }

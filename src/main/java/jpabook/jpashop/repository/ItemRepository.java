@@ -19,7 +19,21 @@ public class ItemRepository {
             em.persist(item);
         }else{
             // id값이 있으면 merge
-            em.merge(item);
+            Item merge = em.merge(item);
+            //  merge 와 item은 다르다
+
+            // -> Item findItem = itemRepository.findOne(itemId);
+            //    findItem.setPrice(param.getPrice());
+            //    findItem.setName(param.getName());
+            //    findItem.setStockQuantity(param.getStockQuantity());
+            //    return findItem
+
+
+            // 주의 변경감지 기능을 사용하면 원하는 속성만 선택해서 변경가능
+            // merge는 merge시 값이 없으면 null로 업데이트함.
+            // 넘어온 파라미터로 전부 업데이트 해버린다.
+
+            // 실무에서는 변경감지를 사용한다!!!!!!!!!!!!
         }
     }
 

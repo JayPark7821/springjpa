@@ -68,14 +68,23 @@ public class ItemController {
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
 
         // 사용자가 권한이 있는지 아이템에 관한 권한이있는지 확인해야한다.
-        Book book = new Book();
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
-        itemService.saveItem(book);
+
+
+        // controller단에서는 entity를 생성하지 마라!!!!
+
+
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+
+//        itemService.saveItem(book);
+
+        // 넘겨야할 파라미터가 너무 많으면 dto생성해서 dto로 넘겨라
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
         return "redirect:/items";
 
     }
