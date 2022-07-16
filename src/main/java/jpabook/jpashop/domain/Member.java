@@ -26,7 +26,7 @@ public class Member {
     //사용자가 여러개의 주문을할 수 있다
     // 주인이아니다 거울이다
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
